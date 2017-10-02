@@ -4,15 +4,30 @@
   "version": "1.1.0",
   "main": "./core/lib/patternlab.js",
   "dependencies": {
+    "autoprefixer": "^7.1.4",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.0",
     "bs-html-injector": "^3.0.0",
+    "concurrently": "^3.5.0",
+    "cssnano": "^3.10.0",
+    "eslint": "^4.8.0",
+    "eslint-loader": "^1.9.0",
     "grunt": "~1.0.1",
     "grunt-browser-sync": "^2.2.0",
-    "grunt-contrib-watch": "^1.0.0",
     "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-postcss": "^0.9.0",
+    "grunt-sass": "^2.0.0",
+    "grunt-sass-lint": "^0.2.3",
+    "grunt-svgmin": "^4.0.0",
+    "grunt-svgstore": "^1.0.0",
+    "load-grunt-tasks": "^3.5.2",
     "minimist": "^1.2.0",
     "patternlab-node": "^2.0.0",
     "styleguidekit-assets-default": "^3.0.0",
-    "styleguidekit-mustache-default": "^3.0.0"
+    "styleguidekit-mustache-default": "^3.0.0",
+    "webpack": "^3.6.0"
   },
   "keywords": [
     "Pattern Lab",
@@ -28,7 +43,15 @@
   "bugs": "https://github.com/pattern-lab/edition-node-grunt/issues",
   "author": "Brian Muenzenmeyer",
   "scripts": {
-    "postinstall": "node node_modules/patternlab-node/core/scripts/postinstall.js"
+    "postinstall": "node node_modules/patternlab-node/core/scripts/postinstall.js",
+    "webpack-dev": "webpack --config ./webpack.config.js",
+    "webpack-prod": "webpack --config ./webpack.config.js -p",
+    "webpack-watch": "webpack --config ./webpack.config.js --watch",
+    "grunt-all": "grunt patternlab:serve",
+    "grunt-prod": "grunt prod",
+    "prod-serve": "concurrently \"npm run grunt-prod\" \"npm run webpack-prod\" \"browser-sync start --server --files \"index.html\"\"",
+    "build": "concurrently \"npm run grunt-prod\" \"npm run webpack-prod\"",
+    "start": "concurrently \"npm run grunt-all\" \"npm run webpack-watch\""
   },
   "license": "MIT",
   "engines": {

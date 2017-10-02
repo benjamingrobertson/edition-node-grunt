@@ -1,0 +1,240 @@
+#########################
+## Sass Lint File
+#########################
+# sass-lint -v
+# Linter Options
+options:
+  # Don't merge default rules
+  merge-default-rules: false
+  # Set the formatter to 'stylish'
+  formatter: compact
+  # Output file instead of logging results
+  # output-file: 'linters/sass-lint.html'
+  # Raise an error if more than 50 warnings are generated
+  max-warnings: 50
+
+  cache-config: true
+# File Options
+files:
+  include: '**/*.sass'
+  # include: '**/*.s+(a|c)ss'
+  ignore:
+    - '**/css/vendor/**/*.*'
+    - '**/css/dist/**/*.*'
+    - '**/css/libs/**/*.*'
+    - '**/css/fonts/**/*.*'
+    - 'node_modules/**/*.*'
+
+
+# Rule Configuration
+rules:
+  # Extends
+  extends-before-mixins: 1
+  extends-before-declarations: 1
+
+  # Line Spacing
+  one-declaration-per-line: 2
+  empty-line-between-blocks:
+      - include: true
+  single-line-per-selector: 1
+
+  # Rule no-color-literals will disallow the use of color literals and basic
+  # color functions in any declarations other than variables or maps/lists.
+  no-color-literals:
+      - 1
+      - allow-rgba: false
+
+  # Rule no-css-comments will enforce the use of Sass single-line comments and
+  # disallow CSS comments. Bang comments (/*! */, will be printed even in
+  # minified mode) are still allowed.
+  no-css-comments: 1
+
+  # Rule no-duplicate-properties will enforce that duplicate properties are not
+  # allowed within the same block.
+  no-duplicate-properties: 1
+
+  # Rule no-empty-rulesets will enforce that rulesets are not empty.
+  no-empty-rulesets: 1
+
+  # Rule no-ids will enforce that ID selectors are not allowed to be used.
+  no-ids: 1
+
+  # Rule no-important will enforce that important declarations are not allowed
+  # to be used.
+  no-important: 1
+
+  # Rule no-invalid-hex will enforce that only valid of hexadecimal values
+  # are written.
+  no-invalid-hex: 2
+
+  # Rule no-misspelled-properties will enforce the correct spelling of CSS
+  # properties and prevent the use of unknown CSS properties.
+  no-misspelled-properties: 2
+
+  # Rule no-universal-selectors will warn against the use of * (universal)
+  # selectors.
+  no-universal-selectors: 2
+
+  # Rule no-vendor-prefixes will enforce that vendor prefixes are not allowed
+  # to be used.
+  #
+  # We will use postCSS to vendor prefix things.
+  no-vendor-prefixes: 1
+
+  # Only allow em/rem units for font-size.
+  # No units allowed for line-height.
+  property-units:
+      - 1
+      - per-property:
+          font-size:
+              - em
+              - rem
+          line-height: []
+
+
+  # Nesting
+
+  # Rule declarations-before-nesting will enforce that declarations should be written before nesting in a ruleset.
+  declarations-before-nesting: 1
+
+
+  # Name Formats
+
+  # The following class names are allowed:
+  # .site-search
+  # .site-search__field
+  # .site-search--full
+  class-name-format:
+      - 2
+      - convention: hyphenatedbem
+
+
+  # Function names cannot have leading underscores
+  # Functions should be camelCase
+  function-name-format:
+      - 1
+      - allow-leading-underscore: false
+      - convention: camelcase
+
+
+  # Style Guide
+
+  # not sure about this one.
+  # https://github.com/sasstools/sass-lint/blob/master/docs/rules/bem-depth.md
+  bem-depth: 1
+
+  # https://github.com/sasstools/sass-lint/blob/master/docs/rules/brace-style.md
+  brace-style:
+      - 1
+      - style: '1tbs'
+      - allow-single-line: false
+
+  # No underscores or extensions in imports
+  clean-import-paths:
+      - 1
+      - leading-underscore: false
+      - filename-extension: false
+
+  # Require 4 spaces for indentation.
+  indentation:
+      - 1
+      - size: 4
+
+  # Limit line length to 80 characters
+  max-line-length:
+      - 1
+      - length: 80
+
+  # Limit how deeply selectors can be nested
+  nesting-depth:
+      - 1
+      - max-depth: 2
+
+  # Prefer single quotes to double quotes
+  # quotes:
+  #     - 1
+  #     - style: single
+
+  url-quotes: 1
+
+
+
+  # Inner Spacing
+
+  # Include a space after commas
+  space-after-comma: 1
+
+  # No space before colon
+  space-before-colon:
+      - 1
+      - include: false
+
+  # Prefer space after colon
+  space-after-colon: 1
+
+  # Prefer space before brace
+  space-before-brace: 1
+
+  # Prefer space before bang
+  space-before-bang: 1
+
+  # Prefer no space after bang
+  space-after-bang: 1
+
+
+  # Final Items
+  trailing-semicolon:
+      - 1
+      - include: false
+
+  # Mixins
+  mixins-before-declarations: 0
+
+  # Disallows (unused)
+  no-attribute-selectors: 0
+  no-color-hex: 0
+  no-color-keywords: 0
+  no-combinators: 0
+  no-debug: 0
+  no-disallowed-properties: 0
+  no-extends: 0
+  no-mergeable-selectors: 0
+  no-qualifying-elements: 0
+  no-trailing-whitespace: 0
+  no-trailing-zero: 0
+  no-transition-all: 0
+  no-url-domains: 0
+  no-url-protocols: 0
+  no-warn: 0
+
+  #nesting (unused)
+  force-attribute-nesting: 0
+  force-element-nesting: 0
+  force-pseudo-nesting: 0
+
+  # name format (unused)
+  id-name-format: 0
+  mixin-name-format: 0
+  placeholder-name-format: 0
+  variable-name-format: 0
+
+  # Style Guide (Unused)
+  attribute-quotes: 0
+  border-zero: 0
+  empty-args: 0
+  hex-length: 0
+  hex-notation: 0
+  leading-zero: 0
+  max-file-line-count: 0
+  property-sort-order: 0
+  pseudo-element: 0
+  shorthand-values: 0
+  variable-for-property: 0
+  zero-unit: 0
+
+  # Inner Spacing
+  space-between-parens: 0
+  space-around-operator: 0
+
+  # Final Items
+  final-newline: 0

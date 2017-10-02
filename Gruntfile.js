@@ -10,9 +10,8 @@ module.exports = function (grunt) {
       argv = require('minimist')(process.argv.slice(2));
 
   // load all grunt tasks
-  grunt.loadNpmTasks('grunt-contrib-copy');
-  grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.loadNpmTasks('grunt-browser-sync');
+  require('load-grunt-tasks')(grunt);
+
 
   /******************************************************
    * PATTERN LAB CONFIGURATION
@@ -63,6 +62,99 @@ module.exports = function (grunt) {
 
 
   grunt.initConfig({
+    /******************************************************
+     * Sass
+    ******************************************************/
+    sass: {
+      devel: {
+        options: {
+          update: true,
+          style: 'expanded',
+          sourcemap: 'auto'
+        },
+        files: {
+          './public/css/style.css': './source/css/main.sass',
+        }
+      },
+      prod: {
+        options: {
+          update: true,
+          compass: true,
+          style: 'compressed'
+        },
+        files: {
+          './public/css/style.css': './source/css/main.sass',
+        }
+      }
+    },
+    sasslint: {
+      options: {
+        configFile: '.sass-lint.yml'
+      },
+      target: ['source/css/**/*.sass']
+    },
+
+    postcss: {
+      options: {
+        map: {
+          inline: false,
+          annotation: './public/css/maps/'
+        },
+
+        processors: [
+          require('autoprefixer')({
+            browsers: [
+              'last 2 versions',
+              'ios 8',
+              'ie 9'
+            ]
+          }),
+          require('cssnano')({
+            options: {
+              sourcemap: true
+            },
+            dist: {
+              files: {
+                './public/css/style.css': './public/css/style.css'
+              }
+            }
+          })
+        ]
+      },
+      dist: {
+        src: './public/css/style.css'
+      }
+    },
+
+
+    /******************************************************
+     * SVG
+    ******************************************************/
+
+    svgmin: {
+      dist: {
+        files: [{
+          expand: true,
+          cwd: './source/svg/icons/',
+          src: ['*.svg'],
+          dest: './public/svg/icons-optimized/'
+        }]
+      }
+    },
+    svgstore: {
+      options: {
+        svg: {
+          'xmlns': 'http://www.w3.org/2000/svg',
+          'xmlns:xlink': 'http://www.w3.org/1999/xlink'
+        }
+      },
+      default: {
+        files: {
+          './public/svg/defs.svg': ['./public/svg/icons-optimized/*.svg']
+        }
+      }
+    },
+
 
     /******************************************************
      * COPY TASKS
@@ -70,10 +162,7 @@ module.exports = function (grunt) {
     copy: {
       main: {
         files: [
-          { expand: true, cwd: path.resolve(paths().source.js), src: '**/*.js', dest: path.resolve(paths().public.js) },
-          { expand: true, cwd: path.resolve(paths().source.js), src: '**/*.js.map', dest: path.resolve(paths().public.js) },
-          { expand: true, cwd: path.resolve(paths().source.css), src: '**/*.css', dest: path.resolve(paths().public.css) },        
-          { expand: true, cwd: path.resolve(paths().source.css), src: '**/*.css.map', dest: path.resolve(paths().public.css) },
+          { expand: true, cwd: path.resolve(paths().source.sass), src: '**/*.css', dest: path.resolve(paths().public.css) },
           { expand: true, cwd: path.resolve(paths().source.images), src: '**/*', dest: path.resolve(paths().public.images) },
           { expand: true, cwd: path.resolve(paths().source.fonts), src: '**/*', dest: path.resolve(paths().public.fonts) },
           { expand: true, cwd: path.resolve(paths().source.root), src: 'favicon.ico', dest: path.resolve(paths().public.root) },
@@ -83,13 +172,15 @@ module.exports = function (grunt) {
         ]
       }
     },
+
     /******************************************************
      * SERVER AND WATCH TASKS
     ******************************************************/
     watch: {
       all: {
         files: [
-          path.resolve(paths().source.css + '**/*.css'),
+          path.resolve(paths().source.sass + '**/*.sass'),
+          path.resolve(paths().source.svg + '**/*.svg'),
           path.resolve(paths().source.styleguide + 'css/*.css'),
           path.resolve(paths().source.patterns + '**/*'),
           path.resolve(paths().source.fonts + '/*'),
@@ -144,7 +235,9 @@ module.exports = function (grunt) {
       }
     },
     bsReload: {
-      css: path.resolve(paths().public.root + '**/*.css')
+      css: path.resolve(paths().public.root + '**/*.css'),
+      svg: path.resolve(paths().public.root + '**/*.svg'),
+      js: path.resolve(paths().public.root + '**/*.js'),
     }
   });
 
@@ -152,9 +245,15 @@ module.exports = function (grunt) {
    * COMPOUND TASKS
   ******************************************************/
 
-  grunt.registerTask('default', ['patternlab', 'copy:main']);
-  grunt.registerTask('patternlab:build', ['patternlab', 'copy:main']);
+  grunt.registerTask('default', ['upup:sass', 'patternlab', 'copy:main']);
+  grunt.registerTask('upup:sass', ['sasslint', 'sass:devel', 'postcss']);
+  grunt.registerTask('upup:svg', ['svgmin', 'svgstore']);
+  grunt.registerTask('upup:prod', ['upup:svg', 'sasslint', 'sass:prod', 'postcss']);
+  grunt.registerTask('patternlab:build', ['upup:prod', 'patternlab', 'copy:main']);
   grunt.registerTask('patternlab:watch', ['patternlab', 'copy:main', 'watch:all']);
-  grunt.registerTask('patternlab:serve', ['patternlab', 'copy:main', 'browserSync', 'watch:all']);
+  grunt.registerTask('patternlab:serve', ['upup:sass', 'upup:svg', 'patternlab', 'copy:main', 'browserSync', 'watch:all']);
+
+  grunt.registerTask('prod', ['patternlab:build', 'index']);
+  grunt.registerTask('index', ['copy:after']);
 
 };
