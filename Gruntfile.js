@@ -162,7 +162,7 @@ module.exports = function (grunt) {
     copy: {
       main: {
         files: [
-          { expand: true, cwd: path.resolve(paths().source.sass), src: '**/*.css', dest: path.resolve(paths().public.css) },
+          // { expand: true, cwd: path.resolve(paths().source.sass), src: '**/*.css', dest: path.resolve(paths().public.css) },
           { expand: true, cwd: path.resolve(paths().source.images), src: '**/*', dest: path.resolve(paths().public.images) },
           { expand: true, cwd: path.resolve(paths().source.fonts), src: '**/*', dest: path.resolve(paths().public.fonts) },
           { expand: true, cwd: path.resolve(paths().source.root), src: 'favicon.ico', dest: path.resolve(paths().public.root) },
